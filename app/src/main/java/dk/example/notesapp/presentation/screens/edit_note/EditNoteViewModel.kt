@@ -14,6 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +27,7 @@ class EditNoteViewModel @Inject constructor(
 ) : ViewModel() {
 
     var noteState: Note? by mutableStateOf(null)
+
     private val noteFlow: Flow<Note?> = savedStateHandle
         .getStateFlow("id", "")
         .flatMapMerge {
@@ -37,6 +39,7 @@ class EditNoteViewModel @Inject constructor(
             noteFlow.collect {
                 if (it != null)
                     noteState = it
+                else println("qqq note is null")
             }
         }
     }

@@ -35,7 +35,7 @@ fun NotesScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val notesState = viewModel.notesFlow.collectAsState()
+        val notesState = viewModel.notesFlow.collectAsState(emptyList())
         val notes = notesState.value
         Text(text = "Notes")
         LazyColumn {

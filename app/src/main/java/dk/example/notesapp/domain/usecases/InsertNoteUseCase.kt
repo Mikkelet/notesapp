@@ -9,7 +9,8 @@ class InsertNoteUseCase @Inject constructor(
 ) {
 
     suspend fun launch(note: Note) {
-        val insert: List<Note> = notesDatabase.notesFlow.value + note
+        val remove: List<Note> = notesDatabase.notesFlow.value.filter { it.id != note.id }
+        val insert = remove + note
         notesDatabase.notesFlow.emit(insert)
     }
 }

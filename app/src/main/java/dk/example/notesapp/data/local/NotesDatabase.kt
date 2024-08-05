@@ -9,3 +9,4 @@ import javax.inject.Singleton
 class NotesDatabase @Inject constructor() {
     val notesFlow = MutableStateFlow<List<Note>>(emptyList())
 }
+

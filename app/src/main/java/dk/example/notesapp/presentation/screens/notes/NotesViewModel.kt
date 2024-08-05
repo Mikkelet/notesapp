@@ -6,7 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.example.notesapp.domain.models.Note
 import dk.example.notesapp.domain.usecases.InsertNoteUseCase
 import dk.example.notesapp.domain.usecases.ObserveNotesUseCase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,5 +27,8 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    val notesFlow: StateFlow<List<Note>> = observeNotesUseCase.launch()
+    val notesFlow: Flow<List<Note>> = observeNotesUseCase.launch()
+        .transform { notes ->
+            emit(notes.sortedBy { it.id.toInt() })
+        }
 }
