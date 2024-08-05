@@ -9,6 +9,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,19 +21,23 @@ fun EditNoteScreen(
     viewModel: EditNoteViewModel = hiltViewModel(),
     navigation: NavController
 ) {
-    val note = viewModel.noteState
-    if (note == null) {
-        Text(text = "loading")
-    } else
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+    val uiStateFlow = viewModel.uiState.collectAsState()
+    val uiState = uiStateFlow.value
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (uiState == EditNoteViewModel.UiState.Loading) {
+            Text(text = "Loading")
+        } else if (uiState is EditNoteViewModel.UiState.OnNote) {
+            val note = uiState.note
+            val titleState = viewModel.titleFlow.collectAsState("")
+            val title = titleState.value ?: ""
             Text(text = "Edit note ${note.id}")
             Spacer(modifier = Modifier.height(32.dp))
-            TextField(value = note.titleState, onValueChange = {
-                note.titleState = it
+            TextField(value = title, onValueChange = {
+                viewModel.onTitleUpdate(it)
             })
             Spacer(modifier = Modifier.height(32.dp))
             Button(onClick = {
@@ -42,6 +47,7 @@ fun EditNoteScreen(
             }) {
                 Text(text = "Apply")
             }
-
         }
+
+    }
 }

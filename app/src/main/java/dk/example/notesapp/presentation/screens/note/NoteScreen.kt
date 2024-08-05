@@ -20,21 +20,26 @@ fun NoteScreen(
     viewModel: NoteViewModel = hiltViewModel(),
     navigation: NavController
 ) {
-    val noteFlow = viewModel.noteFlow.collectAsState(initial = null)
-    val note = noteFlow.value
+    val uiStateFlow = viewModel.uiState.collectAsState(initial = null)
+    val uiState = uiStateFlow.value
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Note ${note?.id}")
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(text = "${note?.titleState}")
-        Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = {
-            navigation.navigate("editnote/${note?.id}")
-        }) {
-            Text(text = "Edit")
+        if (uiState == NoteViewModel.UiState.Loading) {
+            Text(text = "Loading")
+        } else if (uiState is NoteViewModel.UiState.OnNote) {
+            val note = uiState.note
+            Text(text = "Note ${note.id}")
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(text = note.title)
+            Spacer(modifier = Modifier.height(32.dp))
+            Button(onClick = {
+                navigation.navigate("editnote/${note.id}")
+            }) {
+                Text(text = "Edit")
+            }
         }
     }
 }

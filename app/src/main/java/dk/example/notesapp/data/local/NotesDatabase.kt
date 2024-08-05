@@ -1,12 +1,12 @@
 package dk.example.notesapp.data.local
 
-import dk.example.notesapp.domain.models.Note
-import kotlinx.coroutines.flow.MutableStateFlow
-import javax.inject.Inject
-import javax.inject.Singleton
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import dk.example.notesapp.data.local.daos.NoteDao
+import dk.example.notesapp.data.local.entities.NoteEntity
 
-@Singleton
-class NotesDatabase @Inject constructor() {
-    val notesFlow = MutableStateFlow<List<Note>>(emptyList())
+@Database(entities = [NoteEntity::class], version = 1)
+abstract class NotesDatabase : RoomDatabase() {
+    abstract fun notesDao(): NoteDao
 }
 

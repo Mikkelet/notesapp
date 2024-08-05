@@ -1,8 +1,5 @@
 package dk.example.notesapp.presentation.screens.edit_note
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,11 +7,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.example.notesapp.domain.models.Note
 import dk.example.notesapp.domain.usecases.InsertNoteUseCase
 import dk.example.notesapp.domain.usecases.ObserveNoteUseCase
+import dk.example.notesapp.presentation.SavedStateHandleValues.editTitle
+import dk.example.notesapp.presentation.SavedStateHandleValues.editTitleFlow
+import dk.example.notesapp.presentation.SavedStateHandleValues.idFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,28 +25,37 @@ class EditNoteViewModel @Inject constructor(
     private val observeNoteUseCase: ObserveNoteUseCase,
 ) : ViewModel() {
 
-    var noteState: Note? by mutableStateOf(null)
+    sealed class UiState {
+        data object Loading : UiState()
+        data class OnNote(val note: Note) : UiState()
+    }
 
-    private val noteFlow: Flow<Note?> = savedStateHandle
-        .getStateFlow("id", "")
-        .flatMapMerge {
-            observeNoteUseCase.launch(it)
-        }
+    val titleFlow = savedStateHandle.editTitleFlow()
+    val uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
+    private val noteFlow: Flow<Note> = savedStateHandle.idFlow()
+        .flatMapMerge { observeNoteUseCase.launch(it) }
 
     fun init() {
         viewModelScope.launch {
             noteFlow.collect {
-                if (it != null)
-                    noteState = it
-                else println("qqq note is null")
+                uiState.emit(UiState.OnNote(it))
+                if (savedStateHandle.editTitle.isEmpty()) onTitleUpdate(it.title)
             }
         }
     }
 
     fun applyChanges() {
         viewModelScope.launch {
-            if (noteState != null) insertNoteUseCase.launch(noteState!!)
+            val uiState = uiState.value
+            if (uiState is UiState.OnNote) {
+                val updatedNote = uiState.note
+                    .copy(title = savedStateHandle.editTitle)
+                insertNoteUseCase.launch(updatedNote)
+            }
         }
     }
 
+    fun onTitleUpdate(text: String) {
+        savedStateHandle.editTitle = text
+    }
 }

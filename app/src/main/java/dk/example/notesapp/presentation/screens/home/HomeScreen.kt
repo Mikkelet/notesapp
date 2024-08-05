@@ -48,6 +48,7 @@ fun HomeScreen() {
         }
         composable("note/{id}", arguments = listOf(navArgNote)) {
             val viewModel: NoteViewModel = hiltViewModel(it)
+            viewModel.init()
             NoteScreen(navigation = navController)
         }
         composable("editNote/{id}", arguments = listOf(navArgNote)) {
