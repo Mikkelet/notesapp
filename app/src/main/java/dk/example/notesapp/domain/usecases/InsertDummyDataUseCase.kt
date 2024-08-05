@@ -10,6 +10,7 @@ class InsertDummyDataUseCase @Inject constructor(
 ) {
     suspend fun launch(notes: List<Note>) {
         val entities = notesDatabase.notesDao().getAll()
-        if (entities.isEmpty()) notesDatabase.notesDao().insert(notes.toEntities())
+        if (entities.isEmpty())
+            notesDatabase.notesDao().insert(notes.toEntities())
     }
 }

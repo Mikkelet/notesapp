@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import dk.example.notesapp.presentation.screens.Screen
 
 @Composable
 fun NotesScreen(
@@ -31,7 +32,7 @@ fun NotesScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val notesState = viewModel.notesFlowSorted.collectAsState(emptyList())
+        val notesState = viewModel.notesFlowSorted.collectAsState()
         val notes = notesState.value
         Text(text = "Notes")
         LazyColumn {
@@ -40,7 +41,7 @@ fun NotesScreen(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            navigation.navigate("note/${it.id}") {
+                            navigation.navigate(Screen.NoteScreen(it.id)) {
                             }
                         }
                         .fillMaxWidth(),

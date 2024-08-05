@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import dk.example.notesapp.presentation.screens.Screen
 
 @Composable
 fun NoteScreen(
@@ -36,7 +37,7 @@ fun NoteScreen(
             Text(text = note.title)
             Spacer(modifier = Modifier.height(32.dp))
             Button(onClick = {
-                navigation.navigate("editnote/${note.id}")
+                navigation.navigate(Screen.EditNoteScreen(note.id))
             }) {
                 Text(text = "Edit")
             }

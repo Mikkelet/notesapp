@@ -18,11 +18,12 @@ import androidx.navigation.NavController
 
 @Composable
 fun EditNoteScreen(
+    navigation: NavController,
     viewModel: EditNoteViewModel = hiltViewModel(),
-    navigation: NavController
 ) {
     val uiStateFlow = viewModel.uiState.collectAsState()
     val uiState = uiStateFlow.value
+    println("qqq editNoteScreen, state=$uiState")
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -32,7 +33,7 @@ fun EditNoteScreen(
             Text(text = "Loading")
         } else if (uiState is EditNoteViewModel.UiState.OnNote) {
             val note = uiState.note
-            val titleState = viewModel.titleFlow.collectAsState("")
+            val titleState = viewModel.titleFlow.collectAsState()
             val title = titleState.value
             Text(text = "Edit note ${note.id}")
             Spacer(modifier = Modifier.height(32.dp))
@@ -48,6 +49,5 @@ fun EditNoteScreen(
                 Text(text = "Apply")
             }
         }
-
     }
 }
