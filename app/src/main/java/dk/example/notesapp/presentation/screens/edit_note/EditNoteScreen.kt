@@ -33,7 +33,7 @@ fun EditNoteScreen(
         } else if (uiState is EditNoteViewModel.UiState.OnNote) {
             val note = uiState.note
             val titleState = viewModel.titleFlow.collectAsState("")
-            val title = titleState.value ?: ""
+            val title = titleState.value
             Text(text = "Edit note ${note.id}")
             Spacer(modifier = Modifier.height(32.dp))
             TextField(value = title, onValueChange = {
