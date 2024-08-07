@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import dk.example.notesapp.presentation.screens.Screen
+import dk.example.notesapp.presentation.navigation.Screen
 
 @Composable
 fun NotesScreen(

@@ -22,8 +22,10 @@ fun EditNoteScreen(
     viewModel: EditNoteViewModel = hiltViewModel(),
 ) {
     val uiStateFlow = viewModel.uiState.collectAsState()
+    val titleState = viewModel.titleFlow.collectAsState()
     val uiState = uiStateFlow.value
-    println("qqq editNoteScreen, state=$uiState")
+    val title = titleState.value
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -33,8 +35,6 @@ fun EditNoteScreen(
             Text(text = "Loading")
         } else if (uiState is EditNoteViewModel.UiState.OnNote) {
             val note = uiState.note
-            val titleState = viewModel.titleFlow.collectAsState()
-            val title = titleState.value
             Text(text = "Edit note ${note.id}")
             Spacer(modifier = Modifier.height(32.dp))
             TextField(value = title, onValueChange = {
@@ -44,7 +44,6 @@ fun EditNoteScreen(
             Button(onClick = {
                 viewModel.applyChanges()
                 navigation.popBackStack()
-                //navigation.popBackStack("notes", inclusive = false, saveState = true)
             }) {
                 Text(text = "Apply")
             }

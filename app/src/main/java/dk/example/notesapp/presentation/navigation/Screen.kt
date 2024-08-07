@@ -1,4 +1,4 @@
-package dk.example.notesapp.presentation.screens
+package dk.example.notesapp.presentation.navigation
 
 import kotlinx.serialization.Serializable
 

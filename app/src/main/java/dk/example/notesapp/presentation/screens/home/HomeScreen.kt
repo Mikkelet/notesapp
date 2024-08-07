@@ -3,11 +3,14 @@ package dk.example.notesapp.presentation.screens.home
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dk.example.notesapp.presentation.screens.Screen
+import dk.example.notesapp.presentation.MainViewModel
+import dk.example.notesapp.presentation.navigation.NavEvent
+import dk.example.notesapp.presentation.navigation.Screen
 import dk.example.notesapp.presentation.screens.edit_note.EditNoteScreen
 import dk.example.notesapp.presentation.screens.edit_note.EditNoteViewModel
 import dk.example.notesapp.presentation.screens.note.NoteScreen
@@ -17,7 +20,16 @@ import dk.example.notesapp.presentation.screens.notes.NotesViewModel
 
 @Composable
 fun HomeScreen() {
+    val mainViewModel: MainViewModel = hiltViewModel()
     val navController = rememberNavController()
+    LaunchedEffect(0) {
+        mainViewModel.navFlow.collect { navEvent ->
+            when (navEvent) {
+                NavEvent.Back -> navController.popBackStack()
+                is NavEvent.Push -> navController.navigate(navEvent.screen)
+            }
+        }
+    }
     NavHost(navController = navController, startDestination = Screen.NotesScreen,
         enterTransition = {
             slideIntoContainer(
