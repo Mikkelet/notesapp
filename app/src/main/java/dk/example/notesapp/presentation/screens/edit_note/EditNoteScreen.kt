@@ -43,7 +43,6 @@ fun EditNoteScreen(
             Spacer(modifier = Modifier.height(32.dp))
             Button(onClick = {
                 viewModel.applyChanges()
-                navigation.popBackStack()
             }) {
                 Text(text = "Apply")
             }
